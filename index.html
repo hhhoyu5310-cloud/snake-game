@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07130f" />
+    <title>霓虹贪吃蛇</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="game-header">
+        <div>
+          <p class="eyebrow">NEON ARCADE</p>
+          <h1>贪吃蛇</h1>
+        </div>
+        <button id="soundButton" class="icon-button" type="button" aria-label="切换音效">
+          <span id="soundIcon">♪</span>
+        </button>
+      </header>
+
+      <section class="stats" aria-label="游戏数据">
+        <div class="stat-card">
+          <span>当前得分</span>
+          <strong id="score">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>最高纪录</span>
+          <strong id="highScore">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>当前速度</span>
+          <strong id="speed">1×</strong>
+        </div>
+      </section>
+
+      <section class="board-wrap">
+        <canvas id="gameCanvas" width="400" height="400" aria-label="贪吃蛇游戏区域"></canvas>
+        <div id="overlay" class="overlay">
+          <p id="overlayKicker">准备好了吗？</p>
+          <h2 id="overlayTitle">开始游戏</h2>
+          <p id="overlayText">使用方向键、WASD 或下方按钮控制</p>
+          <button id="startButton" class="primary-button" type="button">开始</button>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="pauseButton" class="secondary-button" type="button" disabled>
+          <span>Ⅱ</span> 暂停
+        </button>
+        <button id="restartButton" class="secondary-button" type="button">
+          <span>↻</span> 重开
+        </button>
+      </div>
+
+      <section class="dpad" aria-label="触屏方向控制">
+        <button class="direction up" data-direction="up" type="button" aria-label="向上">▲</button>
+        <button class="direction left" data-direction="left" type="button" aria-label="向左">◀</button>
+        <button class="direction down" data-direction="down" type="button" aria-label="向下">▼</button>
+        <button class="direction right" data-direction="right" type="button" aria-label="向右">▶</button>
+      </section>
+
+      <footer>
+        吃到能量果实 <span class="fruit-dot"></span> · 每 5 分加速
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
