@@ -144,6 +144,7 @@ canvas {
   border-radius: 17px;
   background: #06110d;
   touch-action: none;
+  cursor: crosshair;
 }
 
 .overlay {
@@ -255,44 +256,6 @@ canvas {
   color: var(--green);
 }
 
-.dpad {
-  width: 232px;
-  height: 232px;
-  margin: 20px auto 0;
-  display: grid;
-  grid-template-columns: repeat(3, 72px);
-  grid-template-rows: repeat(3, 72px);
-  gap: 8px;
-  justify-content: center;
-}
-
-.direction {
-  border: 1px solid rgba(102, 255, 159, 0.25);
-  border-radius: 22px;
-  color: var(--green);
-  background: rgba(13, 38, 29, 0.92);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 8px 20px rgba(0, 0, 0, 0.22);
-  cursor: pointer;
-  font-size: 1.35rem;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  transition: transform 70ms ease, background 70ms ease, box-shadow 70ms ease;
-}
-
-.direction:active {
-  transform: scale(0.9);
-  background: rgba(102, 255, 159, 0.24);
-  box-shadow: 0 0 24px rgba(102, 255, 159, 0.18);
-}
-
-.up { grid-column: 2; grid-row: 1; }
-.left { grid-column: 1; grid-row: 2; }
-.down { grid-column: 2; grid-row: 3; }
-.right { grid-column: 3; grid-row: 2; }
-
 footer {
   margin-top: 18px;
   color: var(--muted);
@@ -310,12 +273,6 @@ footer {
   box-shadow: 0 0 8px var(--pink);
 }
 
-@media (min-width: 700px) and (min-height: 800px) {
-  .dpad {
-    display: none;
-  }
-}
-
 @media (max-height: 740px) {
   .game-shell {
     width: min(90vw, 430px);
@@ -324,15 +281,6 @@ footer {
 
   .game-header {
     margin-bottom: 12px;
-  }
-
-  .dpad {
-    width: 190px;
-    height: 190px;
-    margin-top: 12px;
-    grid-template-columns: repeat(3, 58px);
-    grid-template-rows: repeat(3, 58px);
-    gap: 8px;
   }
 
   footer {
