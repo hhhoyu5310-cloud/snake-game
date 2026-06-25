@@ -21,12 +21,15 @@ const minSpeed = 65;
 let snake;
 let food;
 let direction;
-let nextDirection;
+let directionQueue;
 let score;
 let timer = null;
 let gameState = "ready";
 let soundEnabled = true;
 let audioContext;
+let swipePointer = null;
+let swipeX = 0;
+let swipeY = 0;
 
 let highScore = Number(localStorage.getItem("neonSnakeHighScore")) || 0;
 highScoreElement.textContent = highScore;
@@ -38,7 +41,7 @@ function resetGame() {
     { x: 8, y: 10 },
   ];
   direction = { x: 1, y: 0 };
-  nextDirection = { x: 1, y: 0 };
+  directionQueue = [];
   score = 0;
   gameState = "ready";
   scoreElement.textContent = "0";
@@ -81,7 +84,9 @@ function scheduleTick() {
 }
 
 function gameLoop() {
-  direction = nextDirection;
+  if (directionQueue.length) {
+    direction = directionQueue.shift();
+  }
   const head = {
     x: snake[0].x + direction.x,
     y: snake[0].y + direction.y,
@@ -156,7 +161,7 @@ function restartGame() {
   resetGame();
   overlayKicker.textContent = "全新一局";
   overlayTitle.textContent = "准备出发";
-  overlayText.textContent = "使用方向键、WASD 或下方按钮控制";
+  overlayText.textContent = "在棋盘上滑动，或使用下方方向键";
   startButton.textContent = "开始";
   overlay.classList.remove("hidden");
 }
@@ -170,8 +175,30 @@ function setDirection(name) {
   };
   const candidate = directions[name];
   if (!candidate) return;
-  if (candidate.x + direction.x === 0 && candidate.y + direction.y === 0) return;
-  nextDirection = candidate;
+  const previous = directionQueue.at(-1) || direction;
+  const isReverse = candidate.x + previous.x === 0 && candidate.y + previous.y === 0;
+  const isDuplicate = candidate.x === previous.x && candidate.y === previous.y;
+  if (isReverse || isDuplicate || directionQueue.length >= 2) return;
+  directionQueue.push(candidate);
+  if (navigator.vibrate) navigator.vibrate(8);
+}
+
+function handleSwipe(x, y) {
+  const deltaX = x - swipeX;
+  const deltaY = y - swipeY;
+  const threshold = 18;
+  if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < threshold) return false;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    setDirection(deltaX > 0 ? "right" : "left");
+  } else {
+    setDirection(deltaY > 0 ? "down" : "up");
+  }
+
+  swipeX = x;
+  swipeY = y;
+  if (gameState === "ready") startGame();
+  return true;
 }
 
 function draw() {
@@ -308,10 +335,34 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.querySelectorAll(".direction").forEach((button) => {
-  button.addEventListener("pointerdown", () => {
+  button.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
     setDirection(button.dataset.direction);
     if (gameState === "ready") startGame();
   });
+});
+
+document.querySelector(".board-wrap").addEventListener("pointerdown", (event) => {
+  if (event.target.closest("button")) return;
+  swipePointer = event.pointerId;
+  swipeX = event.clientX;
+  swipeY = event.clientY;
+});
+
+document.querySelector(".board-wrap").addEventListener("pointermove", (event) => {
+  if (event.pointerId !== swipePointer) return;
+  if (event.pointerType === "touch") event.preventDefault();
+  handleSwipe(event.clientX, event.clientY);
+});
+
+document.querySelector(".board-wrap").addEventListener("pointerup", (event) => {
+  if (event.pointerId !== swipePointer) return;
+  handleSwipe(event.clientX, event.clientY);
+  swipePointer = null;
+});
+
+document.querySelector(".board-wrap").addEventListener("pointercancel", () => {
+  swipePointer = null;
 });
 
 startButton.addEventListener("click", startGame);
